@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 
@@ -41,12 +42,8 @@ void *buf__grow(const void *buf, int new_len, size_t elem_size) {
 	return new_hdr->buf;
 }
 
-
-int main(int argc, char **argv) {
-	for (int i = 0; i < argc; i++) {
-		printf("Running program at path %s\n", argv[i]);
-	}
-
+int buf_test() {
+	
 	int *lala = NULL;
 	buf_push(lala, 42);
 	buf_push(lala, 420);
@@ -54,5 +51,129 @@ int main(int argc, char **argv) {
 		printf("%d\n", lala[i]);
 	}
 	buf_free(lala);
+	return 1;
+}
+
+typedef enum TokenKind {
+	TOKEN_INT = 128,
+	TOKEN_NAME,
+	//...
+}TokenKind;
+
+typedef struct Token {
+	TokenKind kind;
+	union {
+		uint64_t val;
+	};
+}Token;
+
+const char *stream;
+Token token;
+
+void next_token() {
+	switch (*stream) {
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			{
+				uint64_t  val = 0;
+				while (isdigit(*stream)) {
+					val *= 10;
+					val += *stream++ - '0';
+				}
+				token.kind = TOKEN_INT;
+				token.val = val;
+				break;
+			}
+		case 'a':
+		case 'b':
+		case 'c':
+		case 'd':
+		case 'e':
+		case 'f':
+		case 'g':
+		case 'h':
+		case 'i':
+		case 'j':
+		case 'k':
+		case 'l':
+		case 'm':
+		case 'n':
+		case 'o':
+		case 'p':
+		case 'q':
+		case 'r':
+		case 's':
+		case 't':
+		case 'u':
+		case 'v':
+		case 'w':
+		case 'x':
+		case 'y':
+		case 'z':
+		case 'A':
+		case 'B':
+		case 'C':
+		case 'D':
+		case 'E':
+		case 'F':
+		case 'G':
+		case 'H':
+		case 'I':
+		case 'J':
+		case 'K':
+		case 'L':
+		case 'M':
+		case 'N':
+		case 'O':
+		case 'P':
+		case 'Q':
+		case 'R':
+		case 'S':
+		case 'T':
+		case 'U':
+		case 'V':
+		case 'W':
+		case 'X':
+		case 'Y':
+		case 'Z':
+		case '_': {
+			//TODO: lexing of identifiers: kind = TOKEN_NAME + store a start and end position
+		}
+		default:
+			token.kind = *stream++;
+			break;
+	}
+}
+
+
+int lex_test() {
+	char *source = "+-[]123456789s";
+	stream = source;
+	next_token();
+	while (token.kind) {
+		printf("TOKEN: %d\n", token.kind);
+		next_token();
+	}
+}
+
+
+int main(int argc, char **argv) {
+	for (int i = 0; i < argc; i++) {
+		printf("Running program at path %s\n", argv[i]);
+	}
+	if (buf_test()) {
+		printf("passed buf_test\n");
+	}
+	if (lex_test()) {
+		printf("passed lex_test\n");
+	}
 	return 0;
 }
