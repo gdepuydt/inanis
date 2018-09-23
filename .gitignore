@@ -259,3 +259,8 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+ionide_compiler/ionide_compiler/ionide_compiler.vcxproj.filters
+.gitattributes
+.gitignore
+ionide_compiler/ionide_compiler.sln
+ionide_compiler/ionide_compiler/ionide_compiler.vcxproj
